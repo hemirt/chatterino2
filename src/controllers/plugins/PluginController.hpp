@@ -61,6 +61,8 @@ public:
         const QString &query, const QString &fullTextContent,
         int cursorPosition, bool isFirstWord) const;
 
+    QString handleMessage(QString content);
+
 private:
     void loadPlugins();
     void load(const QFileInfo &index, const QDir &pluginDir,

@@ -81,6 +81,30 @@ struct CompletionEvent {
 sol::table toTable(lua_State *L, const CompletionEvent &ev);
 
 /**
+ * @lua@class NewMessageContent
+ */
+struct NewMessageContent {
+    NewMessageContent(const sol::table &);
+
+    /**
+     * @lua@field values string[] The completions
+     */
+    QString content;
+};
+
+/**
+ * @lua@class MessageReceivedEvent
+ */
+struct MessageReceivedEvent {
+    /**
+     * @lua@field message content received
+     */
+    QString content;
+};
+
+sol::table toTable(lua_State *L, const MessageReceivedEvent &ev);
+
+/**
  * @includefile common/Channel.hpp
  * @includefile controllers/plugins/api/ChannelRef.hpp
  * @includefile controllers/plugins/api/HTTPResponse.hpp

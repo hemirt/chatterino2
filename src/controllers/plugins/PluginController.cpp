@@ -425,5 +425,44 @@ std::pair<bool, QStringList> PluginController::updateCustomCompletions(
     return {false, results};
 }
 
+QString PluginController::handleMessage(QString content)
+{
+    for (const auto &[name, pl] : this->plugins())
+    {
+        if (!pl->error().isNull() || pl->state_ == nullptr)
+        {
+            continue;
+        }
+
+        auto opt = pl->getMessageReceivedCallback();
+        if (opt)
+        {
+            qCDebug(chatterinoLua)
+                << "Processing message received event from plugin" << name;
+            auto &cb = *opt;
+            sol::state_view view(pl->state_);
+            auto errOrNewMessageContent = lua::tryCall<sol::table>(
+                cb, toTable(pl->state_, lua::api::MessageReceivedEvent{
+                                            .content = content,
+                                        }));
+            if (!errOrNewMessageContent.has_value())
+            {
+                qCDebug(chatterinoLua)
+                    << "Got error from plugin " << pl->meta.name
+                    << " while handling message received event: "
+                    << errOrNewMessageContent.get_unexpected().error();
+                continue;
+            }
+
+            auto newContent =
+                lua::api::NewMessageContent(*errOrNewMessageContent);
+
+            content = newContent.content;
+        }
+    }
+
+    return content;
+}
+
 }  // namespace chatterino
 #endif

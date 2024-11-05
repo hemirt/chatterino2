@@ -8,6 +8,8 @@
 #include "controllers/highlights/HighlightController.hpp"
 #include "controllers/ignores/IgnoreController.hpp"
 #include "controllers/ignores/IgnorePhrase.hpp"
+#include "controllers/plugins/Plugin.hpp"
+#include "controllers/plugins/PluginController.hpp"
 #include "controllers/userdata/UserDataController.hpp"
 #include "messages/Emote.hpp"
 #include "messages/Image.hpp"
@@ -2114,6 +2116,12 @@ std::pair<MessagePtrMut, HighlightAlert> MessageBuilder::makeIrcMessage(
         textState.bitsLeft = iterator.value().toInt();
         bits = iterator.value().toString();
     }
+
+#ifdef CHATTERINO_HAVE_PLUGINS
+    content = getApp()->getPlugins()->handleMessage(content);
+    // what about tags or other possible things
+    // twitch emotes could also bug out
+#endif
 
     // Twitch emotes
     auto twitchEmotes =

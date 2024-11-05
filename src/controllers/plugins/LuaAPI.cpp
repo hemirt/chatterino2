@@ -90,6 +90,17 @@ sol::table toTable(lua_State *L, const CompletionEvent &ev)
     );
 }
 
+NewMessageContent::NewMessageContent(const sol::table &table)
+    : content(table.get<QString>("content"))
+{
+}
+
+sol::table toTable(lua_State *L, const MessageReceivedEvent &ev)
+{
+    return sol::state_view(L).create_table_with("content", ev.content  //
+    );
+}
+
 void c2_register_callback(ThisPluginState L, EventType evtType,
                           sol::protected_function callback)
 {

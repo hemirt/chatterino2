@@ -123,6 +123,20 @@ public:
         return it->second;
     }
 
+    std::optional<sol::protected_function> getMessageReceivedCallback()
+    {
+        if (this->state_ == nullptr || !this->error_.isNull())
+        {
+            return {};
+        }
+        auto it = this->callbacks.find(lua::api::EventType::MessageReceived);
+        if (it == this->callbacks.end())
+        {
+            return {};
+        }
+        return it->second;
+    }
+
     /**
      * If the plugin crashes while evaluating the main file, this function will return the error
      */

@@ -8,6 +8,7 @@ namespace chatterino::lua::api {
  */
 enum class EventType {
     CompletionRequested,
+    MessageReceived,
 };
 
 }  // namespace chatterino::lua::api
